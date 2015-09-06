@@ -81,7 +81,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
 
     @Override
-    public void addAll(ArrayList<ViewItem> newData) {
+    public void addAll(List<ViewItem> newData) {
         hideLoadMore();
         if (newData == null || newData.size() < pageCount) {
             isLoadingCompleted = true;
@@ -98,7 +98,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     }
 
     @Override
-    public void replaceAll(ArrayList<ViewItem> newData) {
+    public void replaceAll(List<ViewItem> newData) {
         clearAll();
         addAll(newData);
     }

@@ -45,7 +45,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
     }
 
-    public void addAll(ArrayList<T> newData) {
+    public void addAll(List<T> newData) {
         if (mDatas != null) {
             int start = mDatas.size();
             mDatas.addAll(newData);
@@ -53,7 +53,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
     }
 
-    public void replaceAll(ArrayList<T> newData) {
+    public void replaceAll(List<T> newData) {
         clearAll();
         if (newData == null) {
             newData = new ArrayList<T>();
