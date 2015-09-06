@@ -67,18 +67,18 @@ public class ExtendedRecyclerView extends FrameLayout {
     }
 
     protected void initAttrs(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.superrecyclerview);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.extendedrecyclerview);
         try {
-            mSuperRecyclerViewMainLayout = a.getResourceId(R.styleable.superrecyclerview_mainLayoutId, R.layout.layout_progress_recyclerview);
-            mClipToPadding = a.getBoolean(R.styleable.superrecyclerview_recyclerClipToPadding, false);
-            mPadding = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPadding, -1.0f);
-            mPaddingTop = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPaddingTop, 0.0f);
-            mPaddingBottom = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPaddingBottom, 0.0f);
-            mPaddingLeft = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPaddingLeft, 0.0f);
-            mPaddingRight = (int) a.getDimension(R.styleable.superrecyclerview_recyclerPaddingRight, 0.0f);
-            mScrollbarStyle = a.getInt(R.styleable.superrecyclerview_scrollbarStyle, -1);
-            mEmptyId = a.getResourceId(R.styleable.superrecyclerview_layout_empty, 0);
-            mProgressId = a.getResourceId(R.styleable.superrecyclerview_layout_progress, R.layout.layout_progress);
+            mSuperRecyclerViewMainLayout = a.getResourceId(R.styleable.extendedrecyclerview_mainLayoutId, R.layout.layout_progress_recyclerview);
+            mClipToPadding = a.getBoolean(R.styleable.extendedrecyclerview_recyclerClipToPadding, false);
+            mPadding = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPadding, -1.0f);
+            mPaddingTop = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingTop, 0.0f);
+            mPaddingBottom = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingBottom, 0.0f);
+            mPaddingLeft = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingLeft, 0.0f);
+            mPaddingRight = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingRight, 0.0f);
+            mScrollbarStyle = a.getInt(R.styleable.extendedrecyclerview_scrollbarStyle, -1);
+            mEmptyId = a.getResourceId(R.styleable.extendedrecyclerview_layout_empty, 0);
+            mProgressId = a.getResourceId(R.styleable.extendedrecyclerview_layout_progress, R.layout.layout_progress);
         } finally {
             a.recycle();
         }
