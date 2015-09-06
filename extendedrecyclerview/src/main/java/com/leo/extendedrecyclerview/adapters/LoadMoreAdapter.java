@@ -1,7 +1,8 @@
 package com.leo.extendedrecyclerview.adapters;
 
-import com.leo.superrecyclerview.R;
 import com.leo.extendedrecyclerview.models.ViewItem;
+
+import com.leo.extendedrecyclerview.R;
 
 import java.util.ArrayList;
 import java.util.List;
