@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="superrecyclerview">
+    <declare-styleable name="extendedrecyclerview">
         <attr name="layout_empty" format="reference" />
         <attr name="layout_moreProgress" format="reference" />
         <attr name="layout_progress" format="reference" />
