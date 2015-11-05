@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:paddingBottom="5dp">
 
-    <cn.aixuetang.com.superrecyclerview.widgets.ProgressWheel
+    <cn.aixuetang.com.recyclerview.widgets.ProgressWheel
         android:layout_width="80dp"
         android:layout_height="80dp"
         wheel:matProg_barColor="#f75d5d"

@@ -1,4 +1,4 @@
-package cn.aixuetang.com.superrecyclerview.widgets;
+package cn.aixuetang.com.recyclerview.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 
-import cn.aixuetang.com.superrecyclerview.R;
+import cn.aixuetang.com.recyclerview.R;
 
 
 /**

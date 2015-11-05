@@ -1,10 +1,8 @@
 package com.leo.extendedrecyclerview.adapters;
 
+import com.leo.extendedrecyclerview.R;
 import com.leo.extendedrecyclerview.models.ViewItem;
 
-import com.leo.extendedrecyclerview.R;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +13,10 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     private int loadMoreLayoutId = R.layout.layout_more_progress;
     private boolean isLoading;
     private boolean isLoadingCompleted;
-    private int pageCount = 25;
+    /**
+     * one page item count
+     */
+    public static int pageCount = 25;
 
 
     private ILoadMoreCallback callback;
@@ -29,12 +30,16 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
     public LoadMoreAdapter(int pageCount, List<ViewItem> mDatas) {
         super(mDatas);
-        this.pageCount = pageCount;
+        LoadMoreAdapter.pageCount = pageCount;
         if (this.mDatas.size() >= pageCount) {
             this.mDatas.add(getLoadMoreItem());
         }
     }
 
+    /**
+     * @param mDatas
+     * @param loadMoreLayoutId load more layout id
+     */
     public LoadMoreAdapter(List<ViewItem> mDatas, int loadMoreLayoutId) {
         super(mDatas);
         this.loadMoreLayoutId = loadMoreLayoutId;
@@ -45,7 +50,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
     public LoadMoreAdapter(int pageCount, List<ViewItem> mDatas, int loadMoreLayoutId) {
         super(mDatas);
-        this.pageCount = pageCount;
+        LoadMoreAdapter.pageCount = pageCount;
         this.loadMoreLayoutId = loadMoreLayoutId;
         if (this.mDatas.size() >= pageCount) {
             this.mDatas.add(getLoadMoreItem());
@@ -61,6 +66,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
     public abstract int getNormalLayoutId();
 
+    public abstract void onBindNormalViewHolder(CommonAdapter.CommonViewHolder holder, int position);
 
     @Override
     public void onBindViewHolder(CommonAdapter.CommonViewHolder holder, int position) {
@@ -70,6 +76,9 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
             if (callback != null) {
                 callback.loadMore(position);
             }
+        }
+        if (mDatas.get(position).viewType != VIEW_TYPE_ITEM_LOAD_MORE) {
+            onBindNormalViewHolder(holder, position);
         }
     }
 
@@ -88,19 +97,20 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         } else if (!isLoadingCompleted) {
             newData.add(getLoadMoreItem());
         }
-
-        if (newData != null && newData.size() > 0) {
-            int start = mDatas.size();
-            mDatas.addAll(newData);
-            notifyItemRangeInserted(start, mDatas.size() - 1);
-        }
+        super.addAll(newData);
         isLoading = false;
     }
 
     @Override
     public void replaceAll(List<ViewItem> newData) {
-        clearAll();
-        addAll(newData);
+        isLoading = false;
+        isLoadingCompleted = false;
+        if (newData == null || newData.size() < pageCount) {
+            isLoadingCompleted = true;
+        } else if (!isLoadingCompleted) {
+            newData.add(getLoadMoreItem());
+        }
+        super.replaceAll(newData);
     }
 
     public void setLoadMoreCallback(ILoadMoreCallback callback) {
@@ -125,8 +135,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
             ViewItem viewItem = mDatas.get(lastPosition);
             if (viewItem.viewType == VIEW_TYPE_ITEM_LOAD_MORE) {
                 mDatas.remove(lastPosition);
-                notifyDataSetChanged();
-//                notifyItemRemoved(lastPosition);
+                notifyItemRemoved(lastPosition);
             }
         }
     }

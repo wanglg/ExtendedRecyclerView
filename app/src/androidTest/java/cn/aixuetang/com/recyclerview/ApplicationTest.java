@@ -1,4 +1,4 @@
-package cn.aixuetang.com.superrecyclerview;
+package cn.aixuetang.com.recyclerview;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

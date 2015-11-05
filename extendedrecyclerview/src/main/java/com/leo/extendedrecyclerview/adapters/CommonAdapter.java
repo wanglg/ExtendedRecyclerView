@@ -1,5 +1,6 @@
 package com.leo.extendedrecyclerview.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -13,20 +14,23 @@ import java.util.List;
 
 
 /**
+ * Simple to use RecyclerView
  * Created by wangliugeng on 2015/5/15.
  */
 public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapter.CommonViewHolder> {
     protected List<T> mDatas;
+    public Context mContext;
 
     public CommonAdapter(List<T> mDatas) {
         if (mDatas == null)
-            mDatas = new ArrayList<T>();
+            mDatas = new ArrayList<>();
         this.mDatas = mDatas;
     }
 
     @Override
     public CommonAdapter.CommonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(viewType), parent, false);
+        mContext = itemView.getContext();
         return new CommonViewHolder(itemView);
     }
 
@@ -39,27 +43,30 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
     }
 
     public void addItem(T viewItem) {
-        if (mDatas != null) {
+        if (viewItem != null && mDatas != null) {
             mDatas.add(viewItem);
-            notifyDataSetChanged();
+            notifyItemInserted(mDatas.size() - 1);
         }
     }
 
     public void addAll(List<T> newData) {
         if (mDatas != null) {
             int start = mDatas.size();
-            mDatas.addAll(newData);
-            notifyItemRangeInserted(start, mDatas.size() - 1);
+            mDatas.addAll(newData == null ? new ArrayList<T>() : newData);
+            notifyItemRangeInserted(start, newData == null ? 0 : newData.size() - 1);
+        } else {
+            replaceAll(newData);
         }
     }
 
     public void replaceAll(List<T> newData) {
         clearAll();
         if (newData == null) {
-            newData = new ArrayList<T>();
+            newData = new ArrayList<>();
         }
         mDatas = newData;
-        notifyItemRangeInserted(0, mDatas.size() - 1);
+        //会有动画效果
+        notifyItemRangeInserted(0, mDatas.size());
     }
 
     public void clearAll() {
@@ -67,19 +74,27 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
             return;
         int size = this.mDatas.size();
         if (size > 0) {
-            mDatas = new ArrayList<T>();
+            mDatas = new ArrayList<>();
             this.notifyItemRangeRemoved(0, size);
         }
     }
 
+    /**
+     * the layout resource id
+     *
+     * @param viewType
+     * @return
+     */
     public abstract int getLayoutId(int viewType);
 
     public static class CommonViewHolder extends RecyclerView.ViewHolder {
         private final SparseArray<View> mViews;
+        public Context mContext;
 
         public CommonViewHolder(View itemView) {
             super(itemView);
-            mViews = new SparseArray<View>();
+            mContext = itemView.getContext();
+            mViews = new SparseArray<>();
         }
 
         public <T extends View> T getView(int viewId) {
@@ -92,12 +107,22 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
 
         public void setText(int viewId, String text) {
-            TextView view = (TextView) getView(viewId);
+            TextView view = getView(viewId);
             view.setText(text);
         }
 
+        public void setTextColor(int viewId, int textColor) {
+            TextView view = getView(viewId);
+            view.setTextColor(textColor);
+        }
+
+        public void setVisible(int viewId, int visible) {
+            View view = getView(viewId);
+            view.setVisibility(visible);
+        }
+
         public void setImageResource(int viewId, int drawableId) {
-            ImageView view = (ImageView) getView(viewId);
+            ImageView view = getView(viewId);
             view.setImageResource(drawableId);
         }
 

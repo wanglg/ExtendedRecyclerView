@@ -1,4 +1,4 @@
-package cn.aixuetang.com.superrecyclerview;
+package cn.aixuetang.com.recyclerview;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,8 +13,10 @@ import com.leo.extendedrecyclerview.widgets.ExtendedRecyclerView;
 
 import java.util.ArrayList;
 
-import cn.aixuetang.com.superrecyclerview.widgets.adapters.StringListAdapter;
-import cn.aixuetang.com.superrecyclerview.widgets.itemanimator.CustomItemAnimator;
+import cn.aixuetang.com.recyclerview.widgets.adapters.StringListAdapter;
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.ILoadMoreCallback {
     private ExtendedRecyclerView mRecycler;
@@ -58,11 +60,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     @Override
                     public void run() {
                         ArrayList<ViewItem> data = new ArrayList<ViewItem>();
-                        for (int i = 0; i < 25; i++) {
+                        for (int i = 0; i < LoadMoreAdapter.pageCount; i++) {
                             data.add(new ViewItem(0, "default str" + position++));
                         }
                         mAdapter.addAll(data);
-
                     }
                 });
             }
@@ -71,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mAdapter.setLoadMoreCallback(this);
         mRecycler.setProgressAdapter(mAdapter);
         mRecycler.setRefreshListener(this);
-        mRecycler.setItemAnimator(new CustomItemAnimator());
+        FadeInAnimator fadeInAnimator = new FadeInAnimator();
+        mRecycler.setItemAnimator(fadeInAnimator);
         mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
     }
 
@@ -85,10 +87,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void run() {
                 position = 0;
                 ArrayList<ViewItem> data = new ArrayList<ViewItem>();
-                for (int i = 0; i < 25; i++) {
+                for (int i = 0; i < LoadMoreAdapter.pageCount; i++) {
                     data.add(new ViewItem(0, "refresh str" + position++));
                 }
-                mAdapter.setLoadingCompleted(false);
+//                mAdapter.setLoadingCompleted(false);
                 mAdapter.replaceAll(data);
             }
         }, 2000);
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void run() {
                 ArrayList<ViewItem> data = new ArrayList<ViewItem>();
 
-                for (int i = index; i < index + 25; i++) {
+                for (int i = index; i < index + LoadMoreAdapter.pageCount; i++) {
                     if (i >= 100)
                         break;
                     data.add(new ViewItem(0, "loadmore str" + i));

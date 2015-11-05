@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.leo.extendedrecyclerview.R;
 
@@ -32,9 +34,6 @@ public class ExtendedRecyclerView extends FrameLayout {
     protected int mScrollbarStyle;
     protected int mEmptyId;
 
-
-    protected RecyclerView.OnScrollListener mInternalOnScrollListener;
-    protected RecyclerView.OnScrollListener mExternalOnScrollListener;
 
     protected SwipeRefreshLayout mPtrLayout;
 
@@ -88,10 +87,13 @@ public class ExtendedRecyclerView extends FrameLayout {
         if (isInEditMode()) {
             return;
         }
-        View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
+        ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
+        initRecyclerView(v);
+
         mPtrLayout = (SwipeRefreshLayout) v.findViewById(R.id.ptr_layout);
         mPtrLayout.setEnabled(false);
-
+        mPtrLayout.setColorSchemeResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light,
+                android.R.color.holo_green_light, android.R.color.holo_red_light);
         mProgress = (ViewStub) v.findViewById(android.R.id.progress);
 
         mProgress.setLayoutResource(mProgressId);
@@ -104,7 +106,7 @@ public class ExtendedRecyclerView extends FrameLayout {
             mEmptyView = mEmpty.inflate();
         mEmpty.setVisibility(View.GONE);
 
-        initRecyclerView(v);
+
     }
 
     /**
@@ -121,25 +123,7 @@ public class ExtendedRecyclerView extends FrameLayout {
         if (mRecycler != null) {
             mRecycler.setHasFixedSize(true);
             mRecycler.setClipToPadding(mClipToPadding);
-            mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
 
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (mExternalOnScrollListener != null)
-                        mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
-
-                }
-
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (mExternalOnScrollListener != null)
-                        mExternalOnScrollListener.onScrollStateChanged(recyclerView, newState);
-
-                }
-            };
-            mRecycler.addOnScrollListener(mInternalOnScrollListener);
 
             if (mPadding != -1.0f) {
                 mRecycler.setPadding(mPadding, mPadding, mPadding, mPadding);
@@ -217,7 +201,7 @@ public class ExtendedRecyclerView extends FrameLayout {
                 }
             }
         });
-        if ((adapter == null || adapter.getItemCount() == 0) && mEmptyId != 0) {
+        if ((adapter.getItemCount() == 0) && mEmptyId != 0) {
             mEmpty.setVisibility(View.VISIBLE);
         } else if (mEmptyId != 0) {
             mEmpty.setVisibility(View.GONE);
@@ -355,14 +339,6 @@ public class ExtendedRecyclerView extends FrameLayout {
         mRecycler.setVisibility(View.GONE);
     }
 
-    /**
-     * Set the scroll listener for the recycler
-     *
-     * @param listener
-     */
-    public void setOnScrollListener(RecyclerView.OnScrollListener listener) {
-        mExternalOnScrollListener = listener;
-    }
 
     /**
      * Add the onItemTouchListener for the recycler
@@ -430,7 +406,7 @@ public class ExtendedRecyclerView extends FrameLayout {
         return mEmptyView;
     }
 
-    public static enum LAYOUT_MANAGER_TYPE {
+    public enum LAYOUT_MANAGER_TYPE {
         LINEAR,
         GRID,
         STAGGERED_GRID
