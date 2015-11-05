@@ -53,7 +53,7 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         if (mDatas != null) {
             int start = mDatas.size();
             mDatas.addAll(newData == null ? new ArrayList<T>() : newData);
-            notifyItemRangeInserted(start, newData == null ? 0 : newData.size() - 1);
+            notifyItemRangeInserted(start, newData == null ? 0 : newData.size());
         } else {
             replaceAll(newData);
         }
