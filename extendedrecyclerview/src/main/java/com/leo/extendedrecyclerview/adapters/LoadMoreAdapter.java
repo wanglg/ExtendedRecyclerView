@@ -88,7 +88,6 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         return viewItem.viewType;
     }
 
-
     @Override
     public void addAll(List<ViewItem> newData) {
         hideLoadMore();

@@ -15,8 +15,6 @@ import java.util.ArrayList;
 
 import cn.aixuetang.com.recyclerview.widgets.adapters.StringListAdapter;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
-import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
-import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.ILoadMoreCallback {
     private ExtendedRecyclerView mRecycler;
