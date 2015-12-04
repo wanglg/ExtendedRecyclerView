@@ -109,8 +109,8 @@ public class ProgressWheel extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int viewWidth = circleRadius + this.getPaddingLeft() + this.getPaddingRight();
-        int viewHeight = circleRadius + this.getPaddingTop() + this.getPaddingBottom();
+        int viewWidth = circleRadius * 2 + this.getPaddingLeft() + this.getPaddingRight();
+        int viewHeight = circleRadius * 2 + this.getPaddingTop() + this.getPaddingBottom();
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);

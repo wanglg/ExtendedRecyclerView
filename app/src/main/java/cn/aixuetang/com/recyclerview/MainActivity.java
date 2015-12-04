@@ -5,11 +5,13 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
 import android.widget.Toast;
 
-import com.leo.extendedrecyclerview.adapters.LoadMoreAdapter;
-import com.leo.extendedrecyclerview.models.ViewItem;
-import com.leo.extendedrecyclerview.widgets.ExtendedRecyclerView;
+import com.leowong.extendedrecyclerview.ExtendedRecyclerView;
+import com.leowong.extendedrecyclerview.adapters.LoadMoreAdapter;
+import com.leowong.extendedrecyclerview.decoration.DividerItemDecoration;
+import com.leowong.extendedrecyclerview.models.ViewItem;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mAdapter = new StringListAdapter(list, R.layout.view_more_progress);
 
         mRecycler = (ExtendedRecyclerView) findViewById(R.id.list);
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        mAdapter.replaceAll(new ArrayList<ViewItem>());
                         mRecycler.setAdapter(mAdapter);
                     }
                 });
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     @Override
                     public void run() {
                         ArrayList<ViewItem> data = new ArrayList<ViewItem>();
-                        for (int i = 0; i < LoadMoreAdapter.pageCount; i++) {
+                        for (int i = 0; i < mAdapter.getPageCount(); i++) {
                             data.add(new ViewItem(0, "default str" + position++));
                         }
                         mAdapter.addAll(data);
@@ -68,10 +69,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
         thread.start();
         mAdapter.setLoadMoreCallback(this);
+        mAdapter.setPageCount(10);
         mRecycler.setProgressAdapter(mAdapter);
         mRecycler.setRefreshListener(this);
         FadeInAnimator fadeInAnimator = new FadeInAnimator();
         mRecycler.setItemAnimator(fadeInAnimator);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setLeftMarign(200);
+        dividerItemDecoration.setRightMarign(100);
+        mRecycler.addItemDecoration(dividerItemDecoration);
         mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
     }
 
@@ -85,13 +91,21 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void run() {
                 position = 0;
                 ArrayList<ViewItem> data = new ArrayList<ViewItem>();
-                for (int i = 0; i < LoadMoreAdapter.pageCount; i++) {
+                for (int i = 0; i < mAdapter.getPageCount(); i++) {
                     data.add(new ViewItem(0, "refresh str" + position++));
                 }
-//                mAdapter.setLoadingCompleted(false);
                 mAdapter.replaceAll(data);
             }
         }, 2000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void changLayoutManager() {
+
     }
 
     @Override
@@ -103,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void run() {
                 ArrayList<ViewItem> data = new ArrayList<ViewItem>();
 
-                for (int i = index; i < index + LoadMoreAdapter.pageCount; i++) {
+                for (int i = index; i < index + mAdapter.getPageCount(); i++) {
                     if (i >= 100)
                         break;
                     data.add(new ViewItem(0, "loadmore str" + i));

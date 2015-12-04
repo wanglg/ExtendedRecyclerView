@@ -1,4 +1,4 @@
-package com.leo.extendedrecyclerview.models;
+package com.leowong.extendedrecyclerview.models;
 
 import java.io.Serializable;
 

@@ -1,9 +1,8 @@
 package cn.aixuetang.com.recyclerview.widgets.adapters;
 
 
-import com.leo.extendedrecyclerview.adapters.CommonAdapter;
-import com.leo.extendedrecyclerview.adapters.LoadMoreAdapter;
-import com.leo.extendedrecyclerview.models.ViewItem;
+import com.leowong.extendedrecyclerview.adapters.LoadMoreAdapter;
+import com.leowong.extendedrecyclerview.models.ViewItem;
 
 import java.util.List;
 

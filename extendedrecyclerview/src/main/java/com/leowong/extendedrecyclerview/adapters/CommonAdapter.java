@@ -1,4 +1,4 @@
-package com.leo.extendedrecyclerview.adapters;
+package com.leowong.extendedrecyclerview.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
