@@ -33,7 +33,7 @@ public class ExtendedRecyclerView extends FrameLayout {
 
     protected SwipeRefreshLayout mPtrLayout;
 
-    protected int mSuperRecyclerViewMainLayout;
+    protected int mRecyclerViewMainLayout;
     private int mProgressId;
 
     public SwipeRefreshLayout getSwipeToRefresh() {
@@ -64,7 +64,7 @@ public class ExtendedRecyclerView extends FrameLayout {
     protected void initAttrs(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.extendedrecyclerview);
         try {
-            mSuperRecyclerViewMainLayout = a.getResourceId(R.styleable.extendedrecyclerview_mainLayoutId, R.layout.layout_progress_recyclerview);
+            mRecyclerViewMainLayout = a.getResourceId(R.styleable.extendedrecyclerview_mainLayoutId, R.layout.layout_progress_recyclerview);
             mClipToPadding = a.getBoolean(R.styleable.extendedrecyclerview_recyclerClipToPadding, false);
             mPadding = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPadding, -1.0f);
             mPaddingTop = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingTop, 0.0f);
@@ -83,7 +83,7 @@ public class ExtendedRecyclerView extends FrameLayout {
         if (isInEditMode()) {
             return;
         }
-        ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
+        ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(mRecyclerViewMainLayout, this);
         initRecyclerView(v);
 
         mPtrLayout = (SwipeRefreshLayout) v.findViewById(R.id.ptr_layout);
@@ -274,6 +274,16 @@ public class ExtendedRecyclerView extends FrameLayout {
         hideRecycler();
         if (mEmptyId != 0) mEmpty.setVisibility(View.INVISIBLE);
         mProgress.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Return the {@link RecyclerView.LayoutManager} currently responsible for
+     * layout policy for this RecyclerView.
+     *
+     * @return The currently bound LayoutManager
+     */
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return mRecycler.getLayoutManager();
     }
 
     /**

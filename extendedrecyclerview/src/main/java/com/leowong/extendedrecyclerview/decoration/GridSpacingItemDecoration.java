@@ -15,7 +15,8 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
     /**
      * @param spanCount   每行的数量
      * @param spacing     行间距
-     * @param includeEdge
+     * @param includeEdge 是否在两边有间距 false 没有两边间距
+     *                    recycleerview的边间距可通过设置padding实现
      */
     public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
         this.spanCount = spanCount;

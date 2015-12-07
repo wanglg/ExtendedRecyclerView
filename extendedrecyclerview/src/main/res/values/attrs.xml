@@ -3,7 +3,6 @@
 
     <declare-styleable name="extendedrecyclerview">
         <attr name="layout_empty" format="reference" />
-        <attr name="layout_moreProgress" format="reference" />
         <attr name="layout_progress" format="reference" />
         <attr name="recyclerClipToPadding" format="boolean" />
         <attr name="recyclerPadding" format="dimension" />

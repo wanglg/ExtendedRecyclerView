@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Created by wangliugeng on 2015/6/29.
+ * default page count 25,可以通过构造函数或setPageCount修改 page count，如果page count不固定
+ * 可设置pagecount 为Integer.MAX_VALUE，通过设置setLoadingCompleted(true)来结束加载更多
  */
 public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
@@ -29,6 +31,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         if (this.mDatas.size() >= pageCount) {
             this.mDatas.add(getLoadMoreItem());
         }
+
     }
 
     public LoadMoreAdapter(int pageCount, List<ViewItem> mDatas) {
@@ -64,7 +67,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     public int getLayoutId(int viewType) {
         if (viewType == VIEW_TYPE_ITEM_LOAD_MORE)
             return loadMoreLayoutId;
-        return getNormalLayoutId();
+        return getNormalLayoutId(viewType);
     }
 
     public int getPageCount() {
@@ -76,7 +79,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         int lastPosition = mDatas.size() - 1;
         if (lastPosition >= 0) {
             ViewItem viewItem = mDatas.get(lastPosition);
-            if (viewItem.viewType == VIEW_TYPE_ITEM_LOAD_MORE) {
+            if (viewItem.itemType == VIEW_TYPE_ITEM_LOAD_MORE) {
                 mDatas.remove(lastPosition);
             }
         }
@@ -85,20 +88,30 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         }
     }
 
-    public abstract int getNormalLayoutId();
+    public abstract int getNormalLayoutId(int itemType);
 
     public abstract void onBindNormalViewHolder(CommonViewHolder holder, int position);
+
+    /**
+     * 可重写此方法来自定义点击加载更多
+     *
+     * @param holder
+     * @param position
+     */
+    public void onBindLoadMoreViewHolder(CommonViewHolder holder, int position) {
+    }
 
     @Override
     public void onBindViewHolder(CommonViewHolder holder, int position) {
 
         if (position == mDatas.size() - 1 && position >= pageCount - 1 && !isLoading && !isLoadingCompleted) {
             isLoading = true;
+            onBindLoadMoreViewHolder(holder, position);
             if (callback != null) {
-                callback.loadMore(position);
+                callback.loadMore(holder, position);
             }
         }
-        if (mDatas.get(position).viewType != VIEW_TYPE_ITEM_LOAD_MORE) {
+        if (mDatas.get(position).itemType != VIEW_TYPE_ITEM_LOAD_MORE) {
             onBindNormalViewHolder(holder, position);
         }
     }
@@ -106,7 +119,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     @Override
     public int getItemViewType(int position) {
         ViewItem viewItem = mDatas.get(position);
-        return viewItem.viewType;
+        return viewItem.itemType;
     }
 
     @Override
@@ -153,7 +166,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
         int lastPosition = mDatas.size() - 1;
         if (lastPosition >= 0) {
             ViewItem viewItem = mDatas.get(lastPosition);
-            if (viewItem.viewType == VIEW_TYPE_ITEM_LOAD_MORE) {
+            if (viewItem.itemType == VIEW_TYPE_ITEM_LOAD_MORE) {
                 mDatas.remove(lastPosition);
                 notifyItemRemoved(lastPosition);
             }
@@ -161,6 +174,6 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     }
 
     public interface ILoadMoreCallback {
-        void loadMore(int position);
+        void loadMore(CommonViewHolder holder, int position);
     }
 }

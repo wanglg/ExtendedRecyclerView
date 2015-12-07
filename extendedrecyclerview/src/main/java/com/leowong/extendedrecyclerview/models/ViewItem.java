@@ -9,10 +9,10 @@ public class ViewItem implements Serializable {
 
 
     public Object model;
-    public int viewType;
+    public int itemType;
 
-    public ViewItem(int viewType, Object model) {
-        this.viewType = viewType;
+    public ViewItem(int itemType, Object model) {
+        this.itemType = itemType;
         this.model = model;
     }
 }

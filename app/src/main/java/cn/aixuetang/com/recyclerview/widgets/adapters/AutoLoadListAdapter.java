@@ -8,17 +8,17 @@ import java.util.List;
 
 import cn.aixuetang.com.recyclerview.R;
 
-public class StringListAdapter extends LoadMoreAdapter {
-    public StringListAdapter(List<ViewItem> mDatas) {
+public class AutoLoadListAdapter extends LoadMoreAdapter {
+    public AutoLoadListAdapter(List<ViewItem> mDatas) {
         super(mDatas);
     }
 
-    public StringListAdapter(List<ViewItem> mDatas, int layoutId) {
+    public AutoLoadListAdapter(List<ViewItem> mDatas, int layoutId) {
         super(mDatas, layoutId);
     }
 
     @Override
-    public int getNormalLayoutId() {
+    public int getNormalLayoutId(int itemType) {
         return R.layout.item_string;
     }
 
@@ -26,6 +26,4 @@ public class StringListAdapter extends LoadMoreAdapter {
     public void onBindNormalViewHolder(CommonViewHolder holder, int position) {
         holder.setText(R.id.textView, mDatas.get(position).model.toString());
     }
-
-
 }
