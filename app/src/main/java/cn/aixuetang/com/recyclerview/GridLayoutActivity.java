@@ -84,13 +84,11 @@ public class GridLayoutActivity extends AppCompatActivity implements SwipeRefres
         thread.start();
         mAdapter.setPageCount(20);
         mAdapter.setLoadMoreCallback(this);
-        mRecycler.setProgressAdapter(mAdapter);
-        mRecycler.setRefreshListener(this);
+        ((SwipeRefreshLayout) mRecycler.getSwipeRefreshView()).setOnRefreshListener(this);
         FadeInAnimator fadeInAnimator = new FadeInAnimator();
         mRecycler.setItemAnimator(fadeInAnimator);
         GridSpacingItemDecoration gridSpacingItemDecoration = new GridSpacingItemDecoration(2, 40, false);
         mRecycler.addItemDecoration(gridSpacingItemDecoration);
-        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
     }
 
 

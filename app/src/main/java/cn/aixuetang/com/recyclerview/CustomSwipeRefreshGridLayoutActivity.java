@@ -2,40 +2,56 @@ package cn.aixuetang.com.recyclerview;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Toast;
 
 import com.leowong.extendedrecyclerview.ExtendedRecyclerView;
 import com.leowong.extendedrecyclerview.adapters.CommonAdapter;
 import com.leowong.extendedrecyclerview.adapters.LoadMoreAdapter;
-import com.leowong.extendedrecyclerview.decoration.DividerItemDecoration;
+import com.leowong.extendedrecyclerview.decoration.GridSpacingItemDecoration;
 import com.leowong.extendedrecyclerview.models.ViewItem;
 
 import java.util.ArrayList;
 
-import cn.aixuetang.com.recyclerview.widgets.adapters.AutoLoadListAdapter;
+import cn.aixuetang.com.recyclerview.widgets.CustomRefreshLayout;
+import cn.aixuetang.com.recyclerview.widgets.adapters.GridAdapter;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 
-public class LinearLayoutAutoLoadMoreActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LoadMoreAdapter.ILoadMoreCallback {
+
+public class CustomSwipeRefreshGridLayoutActivity extends AppCompatActivity implements LoadMoreAdapter.ILoadMoreCallback, PtrHandler {
     private ExtendedRecyclerView mRecycler;
-    private AutoLoadListAdapter mAdapter;
+    private GridAdapter mAdapter;
     int position = 0;
-    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vertical_sample);
+        setContentView(R.layout.activity_custom_refresh_sample);
 
         ArrayList<ViewItem> list = new ArrayList<>();
-        mAdapter = new AutoLoadListAdapter(list, R.layout.view_more_progress);
+        mAdapter = new GridAdapter(list);
 
         mRecycler = (ExtendedRecyclerView) findViewById(R.id.list);
-        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecycler.setLayoutManager(linearLayoutManager);
+        gridLayoutManager = new GridLayoutManager(this, 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mAdapter.getItemViewType(position)) {
+                    case LoadMoreAdapter.VIEW_TYPE_ITEM_LOAD_MORE:
+                        return gridLayoutManager.getSpanCount();
+                    default:
+                        return 1;
+                }
+            }
+        });
+        mRecycler.setLayoutManager(gridLayoutManager);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,7 +77,7 @@ public class LinearLayoutAutoLoadMoreActivity extends AppCompatActivity implemen
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<ViewItem> data = new ArrayList<ViewItem>();
+                        ArrayList<ViewItem> data = new ArrayList<>();
                         for (int i = 0; i < mAdapter.getPageCount(); i++) {
                             data.add(new ViewItem(0, "default str" + position++));
                         }
@@ -71,19 +87,16 @@ public class LinearLayoutAutoLoadMoreActivity extends AppCompatActivity implemen
             }
         });
         thread.start();
+        mAdapter.setPageCount(20);
         mAdapter.setLoadMoreCallback(this);
-//        ((SwipeRefreshLayout) mRecycler.getSwipeRefreshView()).setOnRefreshListener(this);
+        ((CustomRefreshLayout) mRecycler.getSwipeRefreshView()).setPtrHandler(this);
         FadeInAnimator fadeInAnimator = new FadeInAnimator();
         mRecycler.setItemAnimator(fadeInAnimator);
-        //添加分割线
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
-        dividerItemDecoration.setLeftMarign(200);
-        dividerItemDecoration.setRightMarign(100);
-        mRecycler.addItemDecoration(dividerItemDecoration);
+        GridSpacingItemDecoration gridSpacingItemDecoration = new GridSpacingItemDecoration(2, 40, false);
+        mRecycler.addItemDecoration(gridSpacingItemDecoration);
     }
 
 
-    @Override
     public void onRefresh() {
         Toast.makeText(this, "Refresh", Toast.LENGTH_LONG).show();
 
@@ -91,11 +104,11 @@ public class LinearLayoutAutoLoadMoreActivity extends AppCompatActivity implemen
         handler.postDelayed(new Runnable() {
             public void run() {
                 position = 0;
-                ArrayList<ViewItem> data = new ArrayList<ViewItem>();
+                ArrayList<ViewItem> data = new ArrayList<>();
                 for (int i = 0; i < mAdapter.getPageCount(); i++) {
                     data.add(new ViewItem(0, "refresh str" + position++));
                 }
-                mAdapter.replaceAll(data);
+                mAdapter.refreshData(data);
             }
         }, 2000);
     }
@@ -122,5 +135,15 @@ public class LinearLayoutAutoLoadMoreActivity extends AppCompatActivity implemen
                 mAdapter.addAll(data);
             }
         }, 2000);
+    }
+
+    @Override
+    public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+        return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+    }
+
+    @Override
+    public void onRefreshBegin(PtrFrameLayout frame) {
+        onRefresh();
     }
 }

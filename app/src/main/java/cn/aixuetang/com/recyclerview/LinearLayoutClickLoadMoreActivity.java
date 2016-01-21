@@ -17,7 +17,6 @@ import com.leowong.extendedrecyclerview.models.ViewItem;
 
 import java.util.ArrayList;
 
-import cn.aixuetang.com.recyclerview.widgets.adapters.AutoLoadListAdapter;
 import cn.aixuetang.com.recyclerview.widgets.adapters.ClickLoadListAdapter;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 
@@ -74,15 +73,13 @@ public class LinearLayoutClickLoadMoreActivity extends AppCompatActivity impleme
         });
         thread.start();
         mAdapter.setLoadMoreCallback(this);
-        mRecycler.setProgressAdapter(mAdapter);
-        mRecycler.setRefreshListener(this);
+        ((SwipeRefreshLayout) mRecycler.getSwipeRefreshView()).setOnRefreshListener(this);
         FadeInAnimator fadeInAnimator = new FadeInAnimator();
         mRecycler.setItemAnimator(fadeInAnimator);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setLeftMarign(200);
         dividerItemDecoration.setRightMarign(100);
         mRecycler.addItemDecoration(dividerItemDecoration);
-        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
     }
 
 

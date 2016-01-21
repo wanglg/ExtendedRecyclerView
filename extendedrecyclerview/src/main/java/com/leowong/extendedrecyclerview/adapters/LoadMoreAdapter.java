@@ -5,11 +5,7 @@ import com.leowong.extendedrecyclerview.models.ViewItem;
 
 import java.util.List;
 
-/**
- * Created by wangliugeng on 2015/6/29.
- * default page count 25,可以通过构造函数或setPageCount修改 page count，如果page count不固定
- * 可设置pagecount 为Integer.MAX_VALUE，通过设置setLoadingCompleted(true)来结束加载更多
- */
+
 public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
     public static final int VIEW_TYPE_ITEM_LOAD_MORE = 2015063009;
@@ -18,9 +14,6 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     private boolean isLoadingCompleted;
 
 
-    /**
-     * one page item count
-     */
     private int pageCount = 25;
 
 
@@ -43,7 +36,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
     }
 
     /**
-     * @param mDatas
+     * @param mDatas           bind data
      * @param loadMoreLayoutId load more layout id
      */
     public LoadMoreAdapter(List<ViewItem> mDatas, int loadMoreLayoutId) {
@@ -92,12 +85,7 @@ public abstract class LoadMoreAdapter extends CommonAdapter<ViewItem> {
 
     public abstract void onBindNormalViewHolder(CommonViewHolder holder, int position);
 
-    /**
-     * 可重写此方法来自定义点击加载更多
-     *
-     * @param holder
-     * @param position
-     */
+
     public void onBindLoadMoreViewHolder(CommonViewHolder holder, int position) {
     }
 

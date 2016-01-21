@@ -9,6 +9,7 @@
         app:multi_state_default="progress"
         app:multi_state_empty="@layout/item_no_data"
         app:recyclerClipToPadding="false"
+        app:recyclerSwipe="@layout/layout_custom_refresh"
         app:recyclerPadding="16dp"
         app:scrollbarStyle="insideInset" />
 

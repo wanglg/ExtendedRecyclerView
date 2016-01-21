@@ -35,7 +35,15 @@
         </activity>
         <activity
             android:name=".GridLayoutActivity"
-            android:label="GridLayout">
+            android:label="GridLayout/DefaultSwipeRefresh">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.example.extendedrecyclerview.SAMPLE_CODE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CustomSwipeRefreshGridLayoutActivity"
+            android:label="GridLayout/CustomSwipeRefresh">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.example.extendedrecyclerview.SAMPLE_CODE" />

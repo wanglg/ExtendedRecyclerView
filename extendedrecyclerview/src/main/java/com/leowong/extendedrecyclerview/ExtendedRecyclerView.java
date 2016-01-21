@@ -2,24 +2,20 @@ package com.leowong.extendedrecyclerview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.FrameLayout;
 
+import com.leowong.library.multistatelayout.MultiStateLayout;
 
-public class ExtendedRecyclerView extends FrameLayout {
-
-
-    protected RecyclerView mRecycler;
-    protected ViewStub mProgress;
-    protected ViewStub mEmpty;
-    protected View mProgressView;
-    protected View mEmptyView;
+/**
+ * User: wanglg
+ * Date: 2016-01-13
+ * Time: 14:34
+ * FIXME
+ */
+public class ExtendedRecyclerView extends MultiStateLayout {
 
     protected boolean mClipToPadding;
     protected int mPadding;
@@ -28,117 +24,117 @@ public class ExtendedRecyclerView extends FrameLayout {
     protected int mPaddingLeft;
     protected int mPaddingRight;
     protected int mScrollbarStyle;
-    protected int mEmptyId;
+    private PullToRefreshHandler pullToRefreshHandler;
 
 
-    protected SwipeRefreshLayout mPtrLayout;
-
-    protected int mRecyclerViewMainLayout;
-    private int mProgressId;
-
-    public SwipeRefreshLayout getSwipeToRefresh() {
-        return mPtrLayout;
-    }
-
-    public RecyclerView getRecyclerView() {
-        return mRecycler;
-    }
-
-    public ExtendedRecyclerView(Context context) {
-        super(context);
-        initView();
-    }
+    /**
+     * Pull-refresh View
+     */
+    private ViewGroup mSwipeRefreshView;
+    private RecyclerView mRecyclerView;
 
     public ExtendedRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttrs(attrs);
-        initView();
+        initAttr(attrs);
+        initRecyclerView();
+        initSwipeRefreshView();
     }
 
-    public ExtendedRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        initAttrs(attrs);
-        initView();
+    public ExtendedRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initAttr(attrs);
+        initRecyclerView();
+        initSwipeRefreshView();
     }
 
-    protected void initAttrs(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.extendedrecyclerview);
-        try {
-            mRecyclerViewMainLayout = a.getResourceId(R.styleable.extendedrecyclerview_mainLayoutId, R.layout.layout_progress_recyclerview);
-            mClipToPadding = a.getBoolean(R.styleable.extendedrecyclerview_recyclerClipToPadding, false);
-            mPadding = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPadding, -1.0f);
-            mPaddingTop = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingTop, 0.0f);
-            mPaddingBottom = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingBottom, 0.0f);
-            mPaddingLeft = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingLeft, 0.0f);
-            mPaddingRight = (int) a.getDimension(R.styleable.extendedrecyclerview_recyclerPaddingRight, 0.0f);
-            mScrollbarStyle = a.getInt(R.styleable.extendedrecyclerview_scrollbarStyle, -1);
-            mEmptyId = a.getResourceId(R.styleable.extendedrecyclerview_layout_empty, 0);
-            mProgressId = a.getResourceId(R.styleable.extendedrecyclerview_layout_progress, R.layout.layout_progress);
-        } finally {
-            a.recycle();
+    @Override
+    protected int getDefaultContentLayoutId(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ExtendedRecyclerView);
+        int layoutId = R.layout.layout_extendrecycler_content;
+        if (a != null) {
+            try {
+                layoutId = a.getResourceId(R.styleable.ExtendedRecyclerView_recyclerSwipe, R.layout.layout_extendrecycler_content);
+            } finally {
+                a.recycle();
+            }
+        }
+        return layoutId;
+    }
+
+    private void initAttr(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ExtendedRecyclerView);
+        if (a != null) {
+            try {
+                mClipToPadding = a.getBoolean(R.styleable.ExtendedRecyclerView_recyclerClipToPadding, false);
+                mPadding = (int) a.getDimension(R.styleable.ExtendedRecyclerView_recyclerPadding, -1.0f);
+                mPaddingTop = (int) a.getDimension(R.styleable.ExtendedRecyclerView_recyclerPaddingTop, 0.0f);
+                mPaddingBottom = (int) a.getDimension(R.styleable.ExtendedRecyclerView_recyclerPaddingBottom, 0.0f);
+                mPaddingLeft = (int) a.getDimension(R.styleable.ExtendedRecyclerView_recyclerPaddingLeft, 0.0f);
+                mPaddingRight = (int) a.getDimension(R.styleable.ExtendedRecyclerView_recyclerPaddingRight, 0.0f);
+                mScrollbarStyle = a.getInt(R.styleable.ExtendedRecyclerView_scrollbarStyle, -1);
+            } finally {
+                a.recycle();
+            }
+        }
+
+    }
+
+    protected void initSwipeRefreshView() {
+        mSwipeRefreshView = (ViewGroup) this.findViewById(R.id.swipe_layout);
+        if (mSwipeRefreshView == null) {
+            throw new IllegalStateException("ExtendedRecyclerView must have a Pull-refresh view ");
+        }
+        if (mSwipeRefreshView instanceof PullToRefreshHandler) {
+            setPullToRefreshHandler((PullToRefreshHandler) mSwipeRefreshView);
         }
     }
 
-    private void initView() {
-        if (isInEditMode()) {
-            return;
-        }
-        ViewGroup v = (ViewGroup) LayoutInflater.from(getContext()).inflate(mRecyclerViewMainLayout, this);
-        initRecyclerView(v);
-
-        mPtrLayout = (SwipeRefreshLayout) v.findViewById(R.id.ptr_layout);
-        mPtrLayout.setEnabled(false);
-        mPtrLayout.setColorSchemeResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light,
-                android.R.color.holo_green_light, android.R.color.holo_red_light);
-        mProgress = (ViewStub) v.findViewById(android.R.id.progress);
-
-        mProgress.setLayoutResource(mProgressId);
-        mProgressView = mProgress.inflate();
-
-
-        mEmpty = (ViewStub) v.findViewById(R.id.empty);
-        mEmpty.setLayoutResource(mEmptyId);
-        if (mEmptyId != 0)
-            mEmptyView = mEmpty.inflate();
-        mEmpty.setVisibility(View.GONE);
-
-
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
     }
 
-    /**
-     * Implement this method to customize the AbsListView
-     */
-    protected void initRecyclerView(View view) {
-        View recyclerView = view.findViewById(android.R.id.list);
+    public void setPullToRefreshHandler(PullToRefreshHandler pullToRefresh) {
+        this.pullToRefreshHandler = pullToRefresh;
+    }
+
+    public void setHasFixedSize(boolean hasFixedSize) {
+        mRecyclerView.setHasFixedSize(hasFixedSize);
+    }
+
+    public ViewGroup getSwipeRefreshView() {
+        return mSwipeRefreshView;
+    }
+
+    private void initRecyclerView() {
+
+        View recyclerView = this.findViewById(android.R.id.list);
 
         if (recyclerView instanceof RecyclerView)
-            mRecycler = (RecyclerView) recyclerView;
+            mRecyclerView = (RecyclerView) recyclerView;
         else {
             throw new IllegalArgumentException("ExtendedRecyclerView works with a RecyclerView!");
         }
-        mRecycler.setHasFixedSize(true);
-        mRecycler.setClipToPadding(mClipToPadding);
+        mRecyclerView.setClipToPadding(mClipToPadding);
 
 
         if (mPadding != -1.0f) {
-            mRecycler.setPadding(mPadding, mPadding, mPadding, mPadding);
+            mRecyclerView.setPadding(mPadding, mPadding, mPadding, mPadding);
         } else {
-            mRecycler.setPadding(mPaddingLeft, mPaddingTop, mPaddingRight, mPaddingBottom);
+            mRecyclerView.setPadding(mPaddingLeft, mPaddingTop, mPaddingRight, mPaddingBottom);
         }
 
         if (mScrollbarStyle != -1) {
-            mRecycler.setScrollBarStyle(mScrollbarStyle);
+            mRecyclerView.setScrollBarStyle(mScrollbarStyle);
         }
     }
-
 
     /**
      * Set the layout manager to the recycler
      *
-     * @param manager
+     * @param manager RecyclerView LayoutManager
      */
     public void setLayoutManager(RecyclerView.LayoutManager manager) {
-        mRecycler.setLayoutManager(manager);
+        mRecyclerView.setLayoutManager(manager);
     }
 
     /**
@@ -147,13 +143,13 @@ public class ExtendedRecyclerView extends FrameLayout {
      * Set the refresh to false
      * If adapter is empty, then the emptyview is shown
      *
-     * @param adapter
+     * @param adapter RecyclerView adapter
      */
     public void setAdapter(RecyclerView.Adapter adapter) {
-        mRecycler.setAdapter(adapter);
-        mProgress.setVisibility(View.GONE);
-        mRecycler.setVisibility(View.VISIBLE);
-        mPtrLayout.setRefreshing(false);
+        mRecyclerView.setAdapter(adapter);
+        if (pullToRefreshHandler != null) {
+            pullToRefreshHandler.swipeRefreshComplete();
+        }
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
@@ -186,19 +182,20 @@ public class ExtendedRecyclerView extends FrameLayout {
             }
 
             private void update() {
-                mProgress.setVisibility(View.GONE);
-                mPtrLayout.setRefreshing(false);
-                if (mRecycler.getAdapter().getItemCount() == 0 && mEmptyId != 0) {
-                    mEmpty.setVisibility(View.VISIBLE);
-                } else if (mEmptyId != 0) {
-                    mEmpty.setVisibility(View.GONE);
+                if (pullToRefreshHandler != null) {
+                    pullToRefreshHandler.swipeRefreshComplete();
+                }
+                if (mRecyclerView.getAdapter().getItemCount() == 0) {
+                    switchState(State.STATE_EMPTY);
+                } else {
+                    switchState(State.STATE_CONTENT);
                 }
             }
         });
-        if ((adapter.getItemCount() == 0) && mEmptyId != 0) {
-            mEmpty.setVisibility(View.VISIBLE);
-        } else if (mEmptyId != 0) {
-            mEmpty.setVisibility(View.GONE);
+        if (adapter.getItemCount() == 0) {
+            switchState(State.STATE_EMPTY);
+        } else {
+            switchState(State.STATE_CONTENT);
         }
     }
 
@@ -208,14 +205,14 @@ public class ExtendedRecyclerView extends FrameLayout {
      * hide recycler view ,empty view
      * adapter data should be empty
      *
-     * @param adapter
+     * @param adapter RecyclerView adapter
      */
     public void setProgressAdapter(RecyclerView.Adapter adapter) {
-        mRecycler.setAdapter(adapter);
-        mProgress.setVisibility(View.VISIBLE);
-        mRecycler.setVisibility(View.GONE);
-        mEmpty.setVisibility(View.GONE);
-        mPtrLayout.setRefreshing(false);
+        mRecyclerView.setAdapter(adapter);
+        switchState(State.STATE_PROGRESS);
+        if (pullToRefreshHandler != null) {
+            pullToRefreshHandler.swipeRefreshComplete();
+        }
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
@@ -248,137 +245,38 @@ public class ExtendedRecyclerView extends FrameLayout {
             }
 
             private void update() {
-                mProgress.setVisibility(View.GONE);
-                mPtrLayout.setRefreshing(false);
-                mRecycler.setVisibility(View.VISIBLE);
-                if (mRecycler.getAdapter().getItemCount() == 0 && mEmptyId != 0) {
-                    mEmpty.setVisibility(View.VISIBLE);
-                } else if (mEmptyId != 0) {
-                    mEmpty.setVisibility(View.GONE);
+                if (pullToRefreshHandler != null) {
+                    pullToRefreshHandler.swipeRefreshComplete();
+                }
+                if (mRecyclerView.getAdapter().getItemCount() == 0) {
+                    switchState(State.STATE_EMPTY);
+                } else {
+                    switchState(State.STATE_CONTENT);
                 }
             }
         });
     }
 
-    /**
-     * Remove the adapter from the recycler
-     */
-    public void clear() {
-        mRecycler.setAdapter(null);
-    }
-
-    /**
-     * Show the progressbar
-     */
-    public void showProgress() {
-        hideRecycler();
-        if (mEmptyId != 0) mEmpty.setVisibility(View.INVISIBLE);
-        mProgress.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Return the {@link RecyclerView.LayoutManager} currently responsible for
-     * layout policy for this RecyclerView.
-     *
-     * @return The currently bound LayoutManager
-     */
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return mRecycler.getLayoutManager();
-    }
-
-    /**
-     * Hide the progressbar and show the recycler
-     */
-    public void showRecycler() {
-        hideProgress();
-        mRecycler.setVisibility(View.VISIBLE);
-    }
-
-
-    /**
-     * Set the listener when refresh is triggered and enable the SwipeRefreshLayout
-     *
-     * @param listener
-     */
-    public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
-        mPtrLayout.setEnabled(true);
-        mPtrLayout.setOnRefreshListener(listener);
-    }
-
-    /**
-     * Set the colors for the SwipeRefreshLayout states
-     *
-     * @param colRes1
-     * @param colRes2
-     * @param colRes3
-     * @param colRes4
-     */
-    public void setRefreshingColorResources(int colRes1, int colRes2, int colRes3, int colRes4) {
-        mPtrLayout.setColorSchemeResources(colRes1, colRes2, colRes3, colRes4);
-    }
-
-    /**
-     * Set the colors for the SwipeRefreshLayout states
-     *
-     * @param col1
-     * @param col2
-     * @param col3
-     * @param col4
-     */
-    public void setRefreshingColor(int col1, int col2, int col3, int col4) {
-        mPtrLayout.setColorSchemeColors(col1, col2, col3, col4);
-    }
-
-    /**
-     * Hide the progressbar
-     */
-    public void hideProgress() {
-        mProgress.setVisibility(View.GONE);
-    }
-
-    /**
-     * Hide the recycler
-     */
-    public void hideRecycler() {
-        mRecycler.setVisibility(View.GONE);
-    }
-
-    /**
-     * @return the recycler adapter
-     */
-    public RecyclerView.Adapter getAdapter() {
-        return mRecycler.getAdapter();
-    }
-
     public void setItemAnimator(RecyclerView.ItemAnimator animator) {
-        mRecycler.setItemAnimator(animator);
+        mRecyclerView.setItemAnimator(animator);
     }
 
     public void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
-        mRecycler.addItemDecoration(itemDecoration);
+        mRecyclerView.addItemDecoration(itemDecoration);
     }
 
     public void addItemDecoration(RecyclerView.ItemDecoration itemDecoration, int index) {
-        mRecycler.addItemDecoration(itemDecoration, index);
+        mRecyclerView.addItemDecoration(itemDecoration, index);
     }
 
     public void removeItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
-        mRecycler.removeItemDecoration(itemDecoration);
+        mRecyclerView.removeItemDecoration(itemDecoration);
     }
 
     /**
-     * @return inflated progress view or null
+     * refresh finish callback
      */
-    public View getProgressView() {
-        return mProgressView;
+    public interface PullToRefreshHandler {
+        void swipeRefreshComplete();
     }
-
-
-    /**
-     * @return inflated empty view or null
-     */
-    public View getEmptyView() {
-        return mEmptyView;
-    }
-
 }

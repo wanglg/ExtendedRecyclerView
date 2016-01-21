@@ -49,6 +49,11 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
     }
 
+    /**
+     * add new data
+     *
+     * @param newData add to foot
+     */
     public void addAll(List<T> newData) {
         if (mDatas != null) {
             int start = mDatas.size();
@@ -59,14 +64,23 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
     }
 
+    /**
+     * There will be a clear animation effects
+     *
+     * @param newData replace data
+     */
     public void replaceAll(List<T> newData) {
         clearAll();
         if (newData == null) {
             newData = new ArrayList<>();
         }
         mDatas = newData;
-        //会有动画效果
         notifyItemRangeInserted(0, mDatas.size());
+    }
+
+    public void refreshData(List<T> newData) {
+        this.mDatas = newData;
+        notifyDataSetChanged();
     }
 
     public void clearAll() {
@@ -79,12 +93,10 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         }
     }
 
-    /**
-     * the layout resource id
-     *
-     * @param viewType
-     * @return
-     */
+    public List<T> getDatas() {
+        return mDatas;
+    }
+
     public abstract int getLayoutId(int viewType);
 
     public static class CommonViewHolder extends RecyclerView.ViewHolder {
