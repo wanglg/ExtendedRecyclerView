@@ -14,5 +14,5 @@
      ```
 
      ```
-        compile 'com.leowong.library:extendedrecyclerview:1.0.0'
+        compile 'com.leowong.library:extendedrecyclerview:1.0.1'
      ```
