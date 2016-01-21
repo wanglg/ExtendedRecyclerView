@@ -70,14 +70,14 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         this.rightMarign = rightMarign;
     }
 
-   /* @Override
+    @Override
     public void onDraw(Canvas c, RecyclerView parent) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
         } else {
             drawHorizontal(c, parent);
         }
-    }*/
+    }
 
     public void drawVertical(Canvas c, RecyclerView parent) {
         final int left = parent.getPaddingLeft() + leftMarign;
@@ -115,12 +115,12 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-  /*  @Override
+    @Override
     public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
         }
-    }*/
+    }
 }
