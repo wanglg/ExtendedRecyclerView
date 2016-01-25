@@ -1,5 +1,5 @@
 ## Description##
-ExtendedRecyclerView支持下拉刷新，空数据页面、进度条、错误等多状态页面切换.
+
 1、封装了一个CommonAdapter便于快速编写RecyclerView的Adapter,我们只需要实现
 ```
      public abstract int getLayoutId(int viewType);//返回item 布局id
