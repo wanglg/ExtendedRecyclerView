@@ -21,15 +21,14 @@
 
 ## 效果Demo##
 ![image](https://github.com/wanglg/resource/blob/master/Default.gif)
+![image](https://github.com/wanglg/resource/blob/master/Custom.gif)
 ## Using Gradle##
-      ```
+```
        repositories {
             maven {
                 url 'https://dl.bintray.com/leowong/maven'
             }
         }
-     ```
-
-     ```
+    
         compile 'com.leowong.library:extendedrecyclerview:1.0.2'
-     ```
+```
