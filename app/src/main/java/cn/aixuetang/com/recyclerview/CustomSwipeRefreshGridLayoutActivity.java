@@ -108,7 +108,7 @@ public class CustomSwipeRefreshGridLayoutActivity extends AppCompatActivity impl
                 for (int i = 0; i < mAdapter.getPageCount(); i++) {
                     data.add(new ViewItem(0, "refresh str" + position++));
                 }
-                mAdapter.refreshData(data);
+                mAdapter.replaceAll(data);
             }
         }, 2000);
     }
