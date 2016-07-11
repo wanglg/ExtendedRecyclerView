@@ -5,10 +5,14 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.leowong.extendedrecyclerview.ExtendedRecyclerView;
+import com.leowong.extendedrecyclerview.RecyclerItemClickListener;
 import com.leowong.extendedrecyclerview.adapters.CommonAdapter;
 import com.leowong.extendedrecyclerview.adapters.LoadMoreAdapter;
 import com.leowong.extendedrecyclerview.decoration.GridSpacingItemDecoration;
@@ -89,6 +93,13 @@ public class GridLayoutActivity extends AppCompatActivity implements SwipeRefres
         mRecycler.setItemAnimator(fadeInAnimator);
         GridSpacingItemDecoration gridSpacingItemDecoration = new GridSpacingItemDecoration(2, 40, false);
         mRecycler.addItemDecoration(gridSpacingItemDecoration);
+        mRecycler.setOnItemClickListener(new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(GridLayoutActivity.this, "tap " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 

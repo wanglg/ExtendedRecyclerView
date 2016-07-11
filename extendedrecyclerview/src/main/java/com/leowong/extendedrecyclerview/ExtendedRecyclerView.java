@@ -97,6 +97,10 @@ public class ExtendedRecyclerView extends MultiStateLayout {
         this.pullToRefreshHandler = pullToRefresh;
     }
 
+    public void setOnItemClickListener(RecyclerItemClickListener.OnItemClickListener onItemClickListener) {
+        getRecyclerView().addOnItemTouchListener(new RecyclerItemClickListener(getContext(), onItemClickListener));
+    }
+
     public void setHasFixedSize(boolean hasFixedSize) {
         mRecyclerView.setHasFixedSize(hasFixedSize);
     }
