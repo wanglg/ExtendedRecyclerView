@@ -9,7 +9,7 @@ android {
     resourcePrefix "recyclerview"
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 3
         versionName "1.1.0"
     }
