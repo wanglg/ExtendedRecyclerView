@@ -30,5 +30,5 @@
             }
         }
     
-        compile 'com.leowong.library:extendedrecyclerview:1.0.2'
+        compile 'com.leowong.library:extendedrecyclerview:1.0.4'
 ```
