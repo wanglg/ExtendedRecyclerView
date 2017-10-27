@@ -1,9 +1,13 @@
 package com.leowong.extendedrecyclerview.adapters;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.leowong.extendedrecyclerview.utils.WrapperUtils;
 
 /**
  * User: wanglg
@@ -91,6 +95,42 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     public LoadMoreWrapperAdapter setLoadMoreView(int layoutId) {
         mLoadMoreLayoutId = layoutId;
         return this;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        WrapperUtils.onAttachedToRecyclerView(mInnerAdapter, recyclerView, new WrapperUtils.SpanSizeCallback() {
+            @Override
+            public int getSpanSize(GridLayoutManager layoutManager, GridLayoutManager.SpanSizeLookup oldLookup, int position) {
+                if (isShowLoadMore(position)) {
+                    return layoutManager.getSpanCount();
+                }
+                if (oldLookup != null) {
+                    return oldLookup.getSpanSize(position);
+                }
+                return 1;
+            }
+        });
+    }
+
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        mInnerAdapter.onViewAttachedToWindow(holder);
+
+        if (isShowLoadMore(holder.getLayoutPosition())) {
+            setFullSpan(holder);
+        }
+    }
+
+    private void setFullSpan(RecyclerView.ViewHolder holder) {
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+
+        if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+
+            p.setFullSpan(true);
+        }
     }
 
     public interface ILoadMoreCallback {
