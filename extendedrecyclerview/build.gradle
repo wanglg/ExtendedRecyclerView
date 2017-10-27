@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'//添加
 // 这个version是区分library版本的，因此当我们需要更新library时记得修改这个version
-version = "1.0.4"
+version = "1.0.5"
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 3
-        versionName "1.0.4"
+        versionName "1.0.5"
     }
     buildTypes {
         release {
@@ -26,7 +26,7 @@ publish {
     userOrg = 'leowong'//bintray.com用户名
     groupId = 'com.leowong.library'//jcenter上的路径
     artifactId = 'extendedrecyclerview'//项目名称
-    publishVersion = '1.0.4'//版本号
+    publishVersion = '1.0.5'//版本号
     desc = 'Oh hi, this is a nice description for a project, right?'//描述
     website = 'https://github.com/wanglg/ExtendedRecyclerView'//网站，不重要；尽量模拟github上的地址，例如我这样的；当然你有地址最好了
 }
