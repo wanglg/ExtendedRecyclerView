@@ -3,12 +3,12 @@ apply plugin: 'com.novoda.bintray-release'//添加
 // 这个version是区分library版本的，因此当我们需要更新library时记得修改这个version
 version = "1.0.4"
 android {
-    compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     resourcePrefix "recyclerview"
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 24
+        minSdkVersion 15
+        targetSdkVersion 25
         versionCode 3
         versionName "1.0.4"
     }
@@ -33,7 +33,7 @@ publish {
 //apply from: '../gradle/gradle-mvn-push.gradle'
 
 dependencies {
-    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.leowong.library:multistatelayout:1.0.2'
 }
 

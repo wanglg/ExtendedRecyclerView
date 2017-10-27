@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.leowong.extendedrecyclerview.ExtendedRecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:multi_state_default="progress"
+        app:multi_state_empty="@layout/item_no_data"
+        app:recyclerClipToPadding="false"
+        app:recyclerSwipe="@layout/layout_custom_refresh"
+        app:recyclerPadding="16dp"
+        app:scrollbarStyle="insideInset" />
+</LinearLayout>

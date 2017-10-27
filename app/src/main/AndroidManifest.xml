@@ -26,6 +26,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".CommonDemoActivity"
+            android:label="Common">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.example.extendedrecyclerview.SAMPLE_CODE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LoadMoreWrapperActivity"
+            android:label="LoadMoreWrapper">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.example.extendedrecyclerview.SAMPLE_CODE" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".LinearLayoutClickLoadMoreActivity"
             android:label="LinearLayout/ClickLoadMore">
             <intent-filter>

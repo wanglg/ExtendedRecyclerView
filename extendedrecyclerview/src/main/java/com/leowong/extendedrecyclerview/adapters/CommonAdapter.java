@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -136,6 +137,11 @@ public abstract class CommonAdapter<T> extends RecyclerView.Adapter<CommonAdapte
         public void setImageResource(int viewId, int drawableId) {
             ImageView view = getView(viewId);
             view.setImageResource(drawableId);
+        }
+
+        public void setChecked(int viewId, boolean checked) {
+            CheckBox view = getView(viewId);
+            view.setChecked(checked);
         }
 
         public void setOnClickListener(int viewId, View.OnClickListener clickListener) {
