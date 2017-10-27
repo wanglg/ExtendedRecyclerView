@@ -18,6 +18,7 @@
 参数position为即将要加载下一页的第一个item的position
 
 4、完全可以自定义下拉刷新控件，ExtendedRecyclerView默认内部集成v4的SwipeRefreshLayout来做下拉刷新，如果你项目不是用SwipeRefreshLayout来做下拉刷新，你可以通过ExtendedRecyclerView的recyclerSwipe属性来指向你自己的下拉刷新控件，这里需要下拉刷新控件实现ExtendedRecyclerView.PullToRefreshHandler接口，具体可以参照CustomSwipeRefreshGridLayoutActivity来修改下拉刷新效果。
+5、增加LoadMoreWrapper可以从原有adapter无改变代码支持加载更多
 
 ## 效果Demo##
 ![image](https://github.com/wanglg/resource/blob/master/Default.gif)
